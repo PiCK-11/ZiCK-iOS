@@ -24,10 +24,11 @@ extension UnAuthenticatedCoordinator: LoginViewControllerDelegate {
         navigator.replace(with: RegisterViewController(delegate: self))
     }
     
-    func login(viewController: LoginViewController) async -> LoginResult {
+    func login(viewController: LoginViewController, username: String, password: String) async -> LoginResult {
         do {
-            try await AuthUseCase.shared.login()
+            try await AuthUseCase.shared.login(username: username, password: password)
         } catch {
+            return LoginResult()
         }
         return LoginResult()
     }
@@ -40,9 +41,9 @@ extension UnAuthenticatedCoordinator: RegisterViewControllerDelegate {
         navigator.replace(with: LoginViewController(delegate: self))
     }
     
-    func register(viewController: RegisterViewController) async -> RegisterResult {
+    func register(viewController: RegisterViewController, username: String, password: String) async -> RegisterResult {
         do {
-            try await AuthUseCase.shared.register()
+            try await AuthUseCase.shared.register(username: username, password: password)
         } catch {
             return RegisterResult()
         }

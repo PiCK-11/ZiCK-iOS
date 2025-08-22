@@ -26,5 +26,9 @@ struct AuthUseCase {
         }
     }
     
+    func logOut() {
+        AuthStorage.shared.clear()
+    }
+    
 }
 

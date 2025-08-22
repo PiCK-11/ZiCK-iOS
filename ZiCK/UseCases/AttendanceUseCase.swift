@@ -7,8 +7,11 @@ struct AttendanceUseCase {
     private init() {}
     
     func hash() async throws(UseCaseError) -> String {
+        guard let token = AuthStorage.shared.currentToken() else {
+            throw UseCaseError.invalidAuthentication
+        }
         do {
-            let response = try await APICaller.shared.qrHash(accessToken: AuthStorage.shared.currentToken())
+            let response = try await APICaller.shared.qrHash(accessToken: token)
             return response.key
         } catch {
             throw UseCaseError(from: error)
@@ -16,9 +19,12 @@ struct AttendanceUseCase {
     }
     
     func markAsAttend(with hash: String) async throws(UseCaseError) {
+        guard let token = AuthStorage.shared.currentToken() else {
+            throw UseCaseError.invalidAuthentication
+        }
         do {
             let response = try await APICaller.shared.markAsAttend(
-                accessToken: AuthStorage.shared.currentToken(),
+                accessToken: token,
                 request: MarkAsAttendRequest(key: hash)
             )
         } catch {
@@ -27,8 +33,11 @@ struct AttendanceUseCase {
     }
     
     func currentEntriesAsExcel() async throws(UseCaseError) -> Data {
+        guard let token = AuthStorage.shared.currentToken() else {
+            throw UseCaseError.invalidAuthentication
+        }
         do {
-            return try await APICaller.shared.exportAsExcel(accessToken: AuthStorage.shared.currentToken())
+            return try await APICaller.shared.exportAsExcel(accessToken: token)
         } catch {
             throw UseCaseError(from: error)
         }

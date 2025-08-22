@@ -1,13 +1,20 @@
 import UIKit
 
+protocol AuthenticatedCoordinatorDelegate: AnyObject {
+    
+    func finishedLogOut(coordinator: AuthenticatedCoordinator)
+    
+}
+
 class AuthenticatedCoordinator: Coordinator {
     
+    weak var delegate: AuthenticatedCoordinatorDelegate?
     let navigator = NavigationControllerNavigator.shared
     
     func start() {
         let coordinator: any Coordinator = switch currentUserRole() {
         case .student:
-            StudentCoordinator()
+            StudentCoordinator(delegate: self)
         case .cafeteria:
             CafeteriaCoordinator()
         }
@@ -16,6 +23,15 @@ class AuthenticatedCoordinator: Coordinator {
     
     private func currentUserRole() -> UserRole {
         .cafeteria
+    }
+    
+}
+
+extension AuthenticatedCoordinator: StudentCoordinatorDelegate {
+    
+    func loggedOut(coordinator: StudentCoordinator) {
+        AuthUseCase.shared.logOut()
+        delegate?.finishedLogOut(coordinator: self)
     }
     
 }

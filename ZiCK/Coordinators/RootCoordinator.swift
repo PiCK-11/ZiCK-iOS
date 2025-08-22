@@ -6,7 +6,9 @@ class RootCoordinator: Coordinator {
     
     private func showChildCoordinator() {
         if authenticated() {
-            AuthenticatedCoordinator().start()
+            let authenticatedCoordinator = AuthenticatedCoordinator()
+            authenticatedCoordinator.delegate = self
+            authenticatedCoordinator.start()
         } else {
             let unAuthenticatedCoordinator = UnAuthenticatedCoordinator()
             unAuthenticatedCoordinator.delegate = self
@@ -23,6 +25,14 @@ class RootCoordinator: Coordinator {
 extension RootCoordinator: UnAuthenticatedCoordinatorDelegate {
     
     func finishedAuthentication(coordinator: UnAuthenticatedCoordinator) {
+        showChildCoordinator()
+    }
+    
+}
+
+extension RootCoordinator: AuthenticatedCoordinatorDelegate {
+    
+    func finishedLogOut(coordinator: AuthenticatedCoordinator) {
         showChildCoordinator()
     }
     

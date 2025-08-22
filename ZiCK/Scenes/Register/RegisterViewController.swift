@@ -5,7 +5,7 @@ struct RegisterResult {}
 protocol RegisterViewControllerDelegate {
     
     func switchToLoginTapped(viewController: RegisterViewController)
-    func register(viewController: RegisterViewController) async -> RegisterResult
+    func register(viewController: RegisterViewController, username: String, password: String) async -> RegisterResult
 
 }
 

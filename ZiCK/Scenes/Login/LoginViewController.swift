@@ -5,7 +5,7 @@ struct LoginResult {}
 protocol LoginViewControllerDelegate {
     
     func switchToRegisterTapped(viewController: LoginViewController)
-    func login(viewController: LoginViewController) async -> LoginResult
+    func login(viewController: LoginViewController, username: String, password: String) async -> LoginResult
 
 }
 

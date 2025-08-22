@@ -4,8 +4,10 @@ struct AuthStorage {
     
     private init() {}
     
-    func currentToken() -> String {}
+    func currentToken() -> String? {}
     
     func setCurrentToken(to token: String) {}
+    
+    func clear() {}
     
 }
