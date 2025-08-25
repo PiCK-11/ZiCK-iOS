@@ -1,4 +1,6 @@
 import UIKit
+import Then
+import TinyConstraints
 
 struct LoginResult {}
 
@@ -9,7 +11,7 @@ protocol LoginViewControllerDelegate {
 
 }
 
-class LoginViewController: UIViewController, HasStrongDelegate {
+class LoginViewController: UIViewController {
     
     var delegate: LoginViewControllerDelegate?
 

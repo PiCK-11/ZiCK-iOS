@@ -7,9 +7,18 @@ protocol CafeteriaHomeViewControllerDelegate {
     
 }
 
-class CafeteriaHomeViewController: UIViewController, HasStrongDelegate {
+class CafeteriaHomeViewController: UIViewController {
     
     var delegate: CafeteriaHomeViewControllerDelegate?
+    
+    init(delegate: CafeteriaHomeViewControllerDelegate? = nil) {
+        super.init(nibName: nil, bundle: nil)
+        self.delegate = delegate
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError()
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()

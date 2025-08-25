@@ -6,9 +6,13 @@ protocol StudentCoordinatorDelegate {
     
 }
 
-class StudentCoordinator: Coordinator, HasStrongDelegate {
+class StudentCoordinator: Coordinator {
     
     var delegate: StudentCoordinatorDelegate?
+    
+    init(delegate: StudentCoordinatorDelegate? = nil) {
+        self.delegate = delegate
+    }
     
     private let navigator = NavigationControllerNavigator.shared
    
