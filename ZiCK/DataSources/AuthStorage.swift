@@ -4,7 +4,9 @@ struct AuthStorage {
     
     private init() {}
     
-    func currentToken() -> String? {}
+    func currentToken() -> String? {
+        nil
+    }
     
     func setCurrentToken(to token: String) {}
     
