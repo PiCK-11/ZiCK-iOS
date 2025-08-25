@@ -21,10 +21,71 @@ class RegisterViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError()
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "Register"
+        
+        configureUI()
+    }
+    
+    // MARK: -UI
+    
+    private lazy var usernameTextField = UITextField().then {
+        $0.placeholder = "아이디"
+    }
+    
+    private lazy var passwordTextField = UITextField().then {
+        $0.placeholder = "비밀번호"
+        $0.isSecureTextEntry = true
+    }
+    
+    private lazy var studentNumberTextField = UITextField().then {
+        $0.placeholder = "학번"
+    }
+    
+    private lazy var signUpButton = {
+        var configuration = UIButton.Configuration.primary()
+        configuration.title = "회원가입"
+        return UIButton(configuration: configuration)
+    }()
+    
+    private lazy var loginButton = {
+        var configuration = UIButton.Configuration.secondary()
+        configuration.title = "로그인"
+        return UIButton(configuration: configuration)
+    }()
+    
+    private lazy var textFieldStackView = UIStackView(
+        arrangedSubviews: [usernameTextField, passwordTextField, studentNumberTextField]
+    ).then {
+        $0.axis = .vertical
+        $0.spacing = 16
+    }
+    
+    private lazy var buttonsStackView = UIStackView(
+        arrangedSubviews: [signUpButton, loginButton]
+    ).then {
+        $0.axis = .vertical
+        $0.spacing = 16
+    }
+    
+    private lazy var controlsStackView = UIStackView(
+        arrangedSubviews: [textFieldStackView, buttonsStackView]
+    ).then {
+        $0.axis = .vertical
+        $0.spacing = 24
+    }
+    
+    func configureUI() {
+        title = "회원가입"
+        view.backgroundColor = .systemBackground
+        
+        configureSubviews()
+    }
+    
+    func configureSubviews() {
+        view.addSubview(controlsStackView)
+        controlsStackView.center(in: view)
     }
 
 }
