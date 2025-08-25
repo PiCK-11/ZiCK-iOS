@@ -17,7 +17,6 @@ extension CafeteriaCoordinator: CafeteriaHomeViewControllerDelegate {
     }
     
     func exportToExcelTapped(viewController: CafeteriaHomeViewController) {
-        <#code#>
     }
     
 }
@@ -25,7 +24,6 @@ extension CafeteriaCoordinator: CafeteriaHomeViewControllerDelegate {
 extension CafeteriaCoordinator: CafeteriaScanViewControllerDelegate {
     
     func qrReceived(viewController: CafeteriaScanViewController) {
-        <#code#>
     }
     
 }
