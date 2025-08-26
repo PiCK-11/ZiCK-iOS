@@ -5,11 +5,11 @@ struct UserUseCase {
     private init() {}
     
     func currentUser() async throws(UseCaseError) -> User {
-        User(id: "0", username: "a", role: .student)
+        User(id: "0", username: "a", role: .cafeteria)
     }
     
     func currentStudentDetails() async throws(UseCaseError) -> StudentDetails {
-        StudentDetails(studentNumber: 3, applied: true)
+        StudentDetails(studentNumber: 3, applied: true, attended: true)
     }
     
 }

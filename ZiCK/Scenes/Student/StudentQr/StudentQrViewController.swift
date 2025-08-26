@@ -25,6 +25,17 @@ class StudentQrViewController: UIViewController {
         configureUI()
     }
     
+    struct SceneData {
+        var message: String
+    }
+    
+    var sceneData: SceneData? {
+        didSet {
+            guard let sceneData else { return }
+            qrImageView.image = qrCode(inputMessage: sceneData.message)
+        }
+    }
+    
     func qrCode(inputMessage: String) -> UIImage {
         let qrCodeGenerator = CIFilter.qrCodeGenerator()
         qrCodeGenerator.message = inputMessage.data(using: .ascii)!
@@ -34,7 +45,7 @@ class StudentQrViewController: UIViewController {
     
     // MARK: -UI
     
-    private lazy var qrImageView = UIImageView(image: qrCode(inputMessage: "test")).then {
+    private lazy var qrImageView = UIImageView().then {
         $0.layer.magnificationFilter = .nearest
     }
     

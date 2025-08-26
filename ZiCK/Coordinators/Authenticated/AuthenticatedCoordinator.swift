@@ -6,28 +6,29 @@ protocol AuthenticatedCoordinatorDelegate: AnyObject {
     
 }
 
-class AuthenticatedCoordinator: Coordinator {
+@MainActor
+class AuthenticatedCoordinator: @preconcurrency Coordinator {
     
     weak var delegate: AuthenticatedCoordinatorDelegate?
     let navigator = NavigationControllerNavigator.shared
     
     func start() {
-        let coordinator: any Coordinator = switch currentUserRole() {
-        case .student:
-            StudentCoordinator(delegate: self)
-        case .cafeteria:
-            CafeteriaCoordinator()
+        Task {
+            let user = try! await UserUseCase.shared.currentUser()
+            let coordinator: any Coordinator = switch user.role {
+            case .student:
+                StudentCoordinator(delegate: self)
+            case .cafeteria:
+                CafeteriaCoordinator()
+            }
+            coordinator.start()
         }
-        coordinator.start()
-    }
-    
-    private func currentUserRole() -> UserRole {
-        .cafeteria
     }
     
 }
 
-extension AuthenticatedCoordinator: StudentCoordinatorDelegate {
+@MainActor
+extension AuthenticatedCoordinator: @preconcurrency StudentCoordinatorDelegate {
     
     func loggedOut(coordinator: StudentCoordinator) {
         AuthUseCase.shared.logOut()

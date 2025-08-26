@@ -25,13 +25,26 @@ class StudentAccountViewController: UIViewController {
         configureUI()
     }
     
+    struct SceneData {
+        let studentNumber: Int
+        let name: String
+        let applied: Bool
+    }
+    
+    var sceneData: SceneData? {
+        didSet {
+            guard let sceneData else { return }
+            rows = [
+                ("학번", String(sceneData.studentNumber)),
+                ("이름", sceneData.name),
+                ("주말 급식", sceneData.applied ? "신청" : "미신청")
+            ]
+        }
+    }
+    
     // MARK: -UI
     
-    let rows: [(String, String)] = [
-        ("학번", "1100"),
-        ("이름", "홍길동"),
-        ("주말 급식", "신청")
-    ]
+    var rows: [(String, String)] = []
     
     var headLabels: [UILabel] {
         rows.map { row in
@@ -67,7 +80,9 @@ class StudentAccountViewController: UIViewController {
     private lazy var logOutButton = {
         var configuration = UIButton.Configuration.destructive()
         configuration.title = "로그아웃"
-        return UIButton(configuration: configuration)
+        return UIButton(configuration: configuration, primaryAction: UIAction { [unowned self] _ in
+            delegate?.logoutTapped(viewController: self)
+        })
     }()
 
     func configureUI() {

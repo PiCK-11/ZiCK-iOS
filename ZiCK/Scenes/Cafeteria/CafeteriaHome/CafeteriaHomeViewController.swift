@@ -39,13 +39,17 @@ class CafeteriaHomeViewController: UIViewController {
     private lazy var qrButton = {
         var configuration = UIButton.Configuration.primary()
         configuration.title = "QR 받기"
-        return UIButton(configuration: configuration)
+        return UIButton(configuration: configuration, primaryAction: UIAction { [unowned self] _ in
+            delegate?.scanTapped(viewController: self)
+        })
     }()
     
     private lazy var downloadAsExcelButton = {
         var configuration = UIButton.Configuration.primary()
         configuration.title = "Excel 파일로 다운로드"
-        return UIButton(configuration: configuration)
+        return UIButton(configuration: configuration, primaryAction: UIAction { [unowned self] _ in
+            delegate?.exportToExcelTapped(viewController: self)
+        })
     }()
     
     private lazy var stackView = UIStackView(

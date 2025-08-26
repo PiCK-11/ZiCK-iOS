@@ -5,7 +5,7 @@ struct RegisterResult {}
 protocol RegisterViewControllerDelegate {
     
     func switchToLoginTapped(viewController: RegisterViewController)
-    func register(viewController: RegisterViewController, username: String, password: String) async -> RegisterResult
+    func register(viewController: RegisterViewController, username: String, password: String, studentNumber: Int) async -> RegisterResult
 
 }
 
@@ -28,6 +28,18 @@ class RegisterViewController: UIViewController {
         configureUI()
     }
     
+    func registerTapped() {
+        guard let username = usernameTextField.text else { return }
+        guard let password = passwordTextField.text else { return }
+        guard let studentNumberString = studentNumberTextField.text else { return }
+        // todo validation
+        guard let studentNumber = Int(studentNumberString) else { return }
+        // todo loading
+        Task {
+            await delegate?.register(viewController: self, username: username, password: password, studentNumber: studentNumber)
+        }
+    }
+    
     // MARK: -UI
     
     private lazy var usernameTextField = UITextField().then {
@@ -46,13 +58,17 @@ class RegisterViewController: UIViewController {
     private lazy var signUpButton = {
         var configuration = UIButton.Configuration.primary()
         configuration.title = "회원가입"
-        return UIButton(configuration: configuration)
+        return UIButton(configuration: configuration, primaryAction: UIAction { [unowned self] _ in
+            registerTapped()
+        })
     }()
     
     private lazy var loginButton = {
         var configuration = UIButton.Configuration.secondary()
         configuration.title = "로그인"
-        return UIButton(configuration: configuration)
+        return UIButton(configuration: configuration, primaryAction: UIAction { [unowned self] _ in
+            delegate?.switchToLoginTapped(viewController: self)
+        })
     }()
     
     private lazy var textFieldStackView = UIStackView(

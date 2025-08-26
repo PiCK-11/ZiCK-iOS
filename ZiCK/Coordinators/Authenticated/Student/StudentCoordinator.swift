@@ -6,7 +6,8 @@ protocol StudentCoordinatorDelegate {
     
 }
 
-class StudentCoordinator: Coordinator {
+@MainActor
+class StudentCoordinator: @preconcurrency Coordinator {
     
     var delegate: StudentCoordinatorDelegate?
     
@@ -17,15 +18,34 @@ class StudentCoordinator: Coordinator {
     private let navigator = NavigationControllerNavigator.shared
    
     func start() {
-        navigator.replace(with: StudentHomeViewController(delegate: self))
+        let homeViewController = StudentHomeViewController(delegate: self)
+        Task {
+            do {
+                let studentDetails = try await UserUseCase.shared.currentStudentDetails()
+                homeViewController.sceneData = StudentHomeViewController.SceneData(attendStatus: studentDetails.attended)
+            } catch {
+                // todo
+            }
+        }
+        navigator.replace(with: homeViewController)
     }
     
 }
 
-extension StudentCoordinator: StudentHomeViewControllerDelegate {
+@MainActor
+extension StudentCoordinator: @preconcurrency StudentHomeViewControllerDelegate {
     
     func attendTapped(viewController: StudentHomeViewController) {
-        navigator.navigate(to: StudentQrViewController(delegate: self))
+        let qrViewController = StudentQrViewController(delegate: self)
+        Task {
+            do {
+                let hash = try await AttendanceUseCase.shared.hash()
+                qrViewController.sceneData = StudentQrViewController.SceneData(message: hash)
+            } catch {
+                // todo
+            }
+        }
+        navigator.navigate(to: qrViewController)
     }
     
 }
@@ -34,7 +54,8 @@ extension StudentCoordinator: StudentQrViewControllerDelegate {
     
 }
 
-extension StudentCoordinator: StudentAccountViewControllerDelegate {
+@MainActor
+extension StudentCoordinator: @preconcurrency StudentAccountViewControllerDelegate {
     
     func logoutTapped(viewController: StudentAccountViewController) {
         delegate?.loggedOut(coordinator: self)

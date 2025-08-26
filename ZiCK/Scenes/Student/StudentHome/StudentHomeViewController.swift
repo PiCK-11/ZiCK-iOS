@@ -27,20 +27,35 @@ class StudentHomeViewController: UIViewController {
         configureUI()
     }
     
+    struct SceneData {
+        let attendStatus: Bool
+    }
+    
+    var sceneData: SceneData? {
+        didSet {
+            guard let sceneData else { return }
+            
+            attendStatusLabel.text = sceneData.attendStatus
+                ? "출석 인증을 완료했습니다"
+                : "출석 인증을 하지 않았습니다"
+        }
+    }
+    
     // MARK: -UI
     
     private lazy var dateLabel = UILabel().then {
         $0.text = DateFormatter.formatAsHome(from: Date())
     }
     
-    private lazy var attendStatusLabel = UILabel().then {
-        $0.text = "출석 인증을 하지 않았습니다"
+    private lazy var attendStatusLabel = UILabel().then { _ in
     }
     
     private lazy var attendButton = {
         var configuration = UIButton.Configuration.primary()
         configuration.title = "출석 인증하기"
-        return UIButton(configuration: configuration)
+        return UIButton(configuration: configuration, primaryAction: UIAction { [unowned self] _ in
+            delegate?.attendTapped(viewController: self)
+        })
     }()
     
     private lazy var stackView = UIStackView(

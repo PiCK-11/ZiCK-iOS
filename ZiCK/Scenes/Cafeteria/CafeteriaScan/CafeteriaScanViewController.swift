@@ -2,7 +2,7 @@ import UIKit
 
 protocol CafeteriaScanViewControllerDelegate {
     
-    func qrReceived(viewController: CafeteriaScanViewController)
+    func qrReceived(viewController: CafeteriaScanViewController, message: String)
     
 }
 
@@ -21,6 +21,13 @@ class CafeteriaScanViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        configureUI()
+    }
+    
+    // MARK: - UI
+    
+    func configureUI() {
+        view.backgroundColor = .systemBackground
         title = "Cafeteria Scan"
     }
 

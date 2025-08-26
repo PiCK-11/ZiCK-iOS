@@ -30,6 +30,16 @@ class LoginViewController: UIViewController {
         configureUI()
     }
     
+    func loginTapped() {
+        guard let username = usernameTextField.text else { return }
+        guard let password = passwordTextField.text else { return }
+        // todo validation
+        // todo loading
+        Task {
+            await delegate?.login(viewController: self, username: username, password: password)
+        }
+    }
+    
     // MARK: -UI
     
     private lazy var usernameTextField = UITextField().then {
@@ -44,13 +54,17 @@ class LoginViewController: UIViewController {
     private lazy var loginButton = {
         var configuration = UIButton.Configuration.primary()
         configuration.title = "로그인"
-        return UIButton(configuration: configuration)
+        return UIButton(configuration: configuration, primaryAction: UIAction { [unowned self] _ in
+            loginTapped()
+        })
     }()
     
     private lazy var signUpButton = {
         var configuration = UIButton.Configuration.secondary()
         configuration.title = "회원가입"
-        return UIButton(configuration: configuration)
+        return UIButton(configuration: configuration, primaryAction: UIAction { [unowned self] _ in
+            delegate?.switchToRegisterTapped(viewController: self)
+        })
     }()
     
     private lazy var textFieldStackView = UIStackView(
