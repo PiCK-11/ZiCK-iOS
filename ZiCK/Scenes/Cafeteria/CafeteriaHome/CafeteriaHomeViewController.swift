@@ -26,7 +26,7 @@ class CafeteriaHomeViewController: UIViewController {
         configureUI()
     }
     
-    // MARK: -UI
+    // MARK: - UI
     
     private lazy var dateLabel = UILabel().then {
         $0.text = DateFormatter.formatAsHome(from: Date())
