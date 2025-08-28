@@ -1,4 +1,4 @@
-struct QrResponse {
+struct QrResponse: Codable {
     
     let key: String
     

@@ -6,8 +6,8 @@ struct AuthUseCase {
     
     func login(username: String, password: String) async throws(UseCaseError) {
         do {
-            let token = try await APICaller.shared.login(request: LoginRequest(username: username, password: password))
-            AuthStorage.shared.setCurrentToken(to: token)
+            let data = try await APICaller.shared.login(request: LoginRequest(username: username, password: password))
+            AuthStorage.shared.setCurrentToken(to: data.token)
         } catch APIError.badRequest {
             throw UseCaseError.invalidValues
         } catch {
@@ -17,10 +17,10 @@ struct AuthUseCase {
     
     func register(username: String, password: String, studentNumber: Int) async throws(UseCaseError) {
         do {
-            let token = try await APICaller.shared.signUp(
+            let data = try await APICaller.shared.signUp(
                 request: SignUpRequest(username: username, password: password, studentNumber: studentNumber)
             )
-            AuthStorage.shared.setCurrentToken(to: token)
+            AuthStorage.shared.setCurrentToken(to: data.token)
         } catch APIError.badRequest {
             throw UseCaseError.invalidValues
         } catch {
