@@ -31,8 +31,8 @@ class LoginViewController: UIViewController {
     }
     
     func loginTapped() {
-        guard let username = usernameTextField.text else { return }
-        guard let password = passwordTextField.text else { return }
+        guard let username = usernameTextField.field.text else { return }
+        guard let password = passwordTextField.field.text else { return }
         // todo validation
         // todo loading
         Task {
@@ -42,36 +42,37 @@ class LoginViewController: UIViewController {
     
     // MARK: -UI
     
-    private lazy var usernameTextField = UITextField().then {
-        $0.placeholder = "아이디"
+    private lazy var logoImageView = UIImageView().then {
+        $0.image = UIImage(named: "Logo")
     }
     
-    private lazy var passwordTextField = UITextField().then {
-        $0.placeholder = "비밀번호"
-        $0.isSecureTextEntry = true
+    private lazy var usernameTextField = LabeledTextField().then {
+        $0.label.text = "아이디"
     }
     
-    private lazy var loginButton = {
-        var configuration = UIButton.Configuration.primary()
-        configuration.title = "로그인"
-        return UIButton(configuration: configuration, primaryAction: UIAction { [unowned self] _ in
-            loginTapped()
-        })
-    }()
+    private lazy var passwordTextField = LabeledTextField().then {
+        $0.label.text = "비밀번호"
+        $0.field.isSecureTextEntry = true
+    }
     
-    private lazy var signUpButton = {
-        var configuration = UIButton.Configuration.secondary()
-        configuration.title = "회원가입"
-        return UIButton(configuration: configuration, primaryAction: UIAction { [unowned self] _ in
-            delegate?.switchToRegisterTapped(viewController: self)
-        })
-    }()
+    private lazy var loginButton = UIButton(configuration: UIButton.Configuration.primary().with {
+        $0.title = "로그인"
+    }, primaryAction: UIAction { [unowned self] _ in
+        loginTapped()
+    })
+    
+    private lazy var signUpButton = UIButton(configuration: UIButton.Configuration.secondary().with {
+        $0.title = "회원가입"
+    }, primaryAction: UIAction { [unowned self] _ in
+        delegate?.switchToRegisterTapped(viewController: self)
+    })
     
     private lazy var textFieldStackView = UIStackView(
         arrangedSubviews: [usernameTextField, passwordTextField]
     ).then {
         $0.axis = .vertical
-        $0.spacing = 16
+        $0.distribution = .fill
+        $0.spacing = 32
     }
     
     private lazy var buttonsStackView = UIStackView(
@@ -81,13 +82,6 @@ class LoginViewController: UIViewController {
         $0.spacing = 16
     }
     
-    private lazy var controlsStackView = UIStackView(
-        arrangedSubviews: [textFieldStackView, buttonsStackView]
-    ).then {
-        $0.axis = .vertical
-        $0.spacing = 24
-    }
-
     func configureUI() {
         title = "로그인"
         view.backgroundColor = .systemBackground
@@ -96,8 +90,22 @@ class LoginViewController: UIViewController {
     }
     
     func configureSubviews() {
-        view.addSubview(controlsStackView)
-        controlsStackView.center(in: view)
+        view.addSubviews(logoImageView, textFieldStackView, buttonsStackView)
+        
+        LabeledTextField.align(usernameTextField, passwordTextField)
+
+        logoImageView.width(180)
+        logoImageView.height(180)
+        logoImageView.centerX(to: view)
+        logoImageView.bottomToTop(of: textFieldStackView, offset: -48)
+        
+        textFieldStackView.centerY(to: view)
+        textFieldStackView.leading(to: view.safeAreaLayoutGuide, offset: .horizontalMargin)
+        textFieldStackView.trailing(to: view.safeAreaLayoutGuide, offset: -.horizontalMargin)
+        
+        buttonsStackView.leading(to: view.safeAreaLayoutGuide, offset: .horizontalMargin)
+        buttonsStackView.trailing(to: view.safeAreaLayoutGuide, offset: -.horizontalMargin)
+        buttonsStackView.bottom(to: view.safeAreaLayoutGuide, offset: -.verticalMargin)
     }
 
 }
