@@ -1,6 +1,9 @@
 struct SignUpResponse: Codable {
     
-    let token: String
+    let userId: String
+    let accessToken: String
+    let tokenType: String
+    let statusCode: Int
     
 }
 

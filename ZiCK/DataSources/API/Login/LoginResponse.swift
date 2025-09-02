@@ -1,6 +1,8 @@
 struct LoginResponse: Codable {
    
-    let token: String
+    let accessToken: String
+    let tokenType: String
+    let statusCode: Int
     
 }
 

@@ -1,7 +1,8 @@
 struct CurrentUserResponse: Codable {
     
-    let studentNumber: Int
     let username: String
-    let applied: Bool
-    
+    let studentNumber: Int?
+    let applied: Bool?
+    let verified: Bool?
+
 }

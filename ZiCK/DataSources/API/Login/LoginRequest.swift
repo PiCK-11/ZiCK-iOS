@@ -1,6 +1,6 @@
 struct LoginRequest: Codable {
     
-    let username: String
+    let userId: String
     let password: String
     
 }

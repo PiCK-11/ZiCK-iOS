@@ -1,6 +1,7 @@
 struct SignUpRequest: Codable {
     
-    let username: String
+    let userId: String
+    let name: String
     let password: String
     let studentNumber: Int
     
