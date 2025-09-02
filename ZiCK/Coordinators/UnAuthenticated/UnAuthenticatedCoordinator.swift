@@ -42,9 +42,9 @@ extension UnAuthenticatedCoordinator: RegisterViewControllerDelegate {
         navigator.replace(with: LoginViewController(delegate: self))
     }
     
-    func register(viewController: RegisterViewController, username: String, password: String, studentNumber: Int) async -> RegisterResult {
+    func register(viewController: RegisterViewController, username: String, password: String, name: String, studentNumber: Int) async -> RegisterResult {
         do {
-            try await AuthUseCase.shared.register(username: username, password: password, studentNumber: studentNumber)
+            try await AuthUseCase.shared.register(username: username, password: password, name: name, studentNumber: studentNumber)
             delegate?.finishedAuthentication(coordinator: self)
         } catch {
             return RegisterResult()

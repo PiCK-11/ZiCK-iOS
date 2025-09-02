@@ -46,6 +46,11 @@ class LoginViewController: UIViewController {
         $0.image = UIImage(named: "Logo")
     }
     
+    private lazy var titleLabel = UILabel().then {
+        $0.font =  .preferredFont(forTextStyle: .extraLargeTitle)
+        $0.text = "로그인"
+    }
+    
     private lazy var usernameTextField = LabeledTextField().then {
         $0.label.text = "아이디"
     }
@@ -83,23 +88,30 @@ class LoginViewController: UIViewController {
     }
     
     func configureUI() {
-        title = "로그인"
         view.backgroundColor = .systemBackground
         
         configureSubviews()
     }
     
     func configureSubviews() {
-        view.addSubviews(logoImageView, textFieldStackView, buttonsStackView)
+        view.addSubviews(
+            logoImageView,
+            titleLabel,
+            textFieldStackView,
+            buttonsStackView
+        )
         
         LabeledTextField.align(usernameTextField, passwordTextField)
 
         logoImageView.width(180)
         logoImageView.height(180)
         logoImageView.centerX(to: view)
-        logoImageView.bottomToTop(of: textFieldStackView, offset: -48)
+        logoImageView.top(to: view.safeAreaLayoutGuide, offset: 40)
         
-        textFieldStackView.centerY(to: view)
+        titleLabel.centerX(to: view)
+        titleLabel.topToBottom(of: logoImageView, offset: 24)
+        
+        textFieldStackView.topToBottom(of: titleLabel, offset: 32)
         textFieldStackView.leading(to: view.safeAreaLayoutGuide, offset: .horizontalMargin)
         textFieldStackView.trailing(to: view.safeAreaLayoutGuide, offset: -.horizontalMargin)
         
