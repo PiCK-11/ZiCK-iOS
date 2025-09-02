@@ -34,56 +34,35 @@ class StudentAccountViewController: UIViewController {
     var sceneData: SceneData? {
         didSet {
             guard let sceneData else { return }
-            rows = [
-                ("학번", String(sceneData.studentNumber)),
-                ("이름", sceneData.name),
-                ("주말 급식", sceneData.applied ? "신청" : "미신청")
-            ]
+            studentNumberRow.body = String(sceneData.studentNumber)
+            nameRow.body = sceneData.name
+            appliedRow.body = sceneData.applied ? "신청" : "미신청"
         }
     }
     
     // MARK: -UI
     
-    var rows: [(String, String)] = []
+    private lazy var studentNumberRow = StudentAccountInfoRow(head: "학번")
+    private lazy var nameRow = StudentAccountInfoRow(head: "이름")
+    private lazy var appliedRow = StudentAccountInfoRow(head: "주말 급식")
     
-    var headLabels: [UILabel] {
-        rows.map { row in
-            UILabel().then {
-                $0.text = row.0
-            }
-        }
-    }
-    
-    var valueLabels: [UILabel] {
-        rows.map { row in
-            UILabel().then {
-                $0.text = row.1
-            }
-        }
-    }
-    
-    let tableSpacing: CGFloat = 6
-    let horizontalMargin: CGFloat = 12
-    let verticalMargin: CGFloat = 20
-    
-    private lazy var headStackView = UIStackView(arrangedSubviews: headLabels).then {
+    private lazy var rowsStackView = UIStackView(
+        arrangedSubviews: [
+            studentNumberRow,
+            nameRow,
+            appliedRow
+        ]
+    ).then {
         $0.axis = .vertical
-        $0.spacing = tableSpacing
+        $0.spacing = 16
+        $0.distribution = .fill
     }
     
-    private lazy var valueStackView = UIStackView(arrangedSubviews: valueLabels).then {
-        $0.axis = .vertical
-        $0.alignment = .trailing
-        $0.spacing = tableSpacing
-    }
-    
-    private lazy var logOutButton = {
-        var configuration = UIButton.Configuration.destructive()
-        configuration.title = "로그아웃"
-        return UIButton(configuration: configuration, primaryAction: UIAction { [unowned self] _ in
-            delegate?.logoutTapped(viewController: self)
-        })
-    }()
+    private lazy var logOutButton = UIButton(configuration: UIButton.Configuration.destructive().with {
+        $0.title = "로그아웃"
+    }, primaryAction: UIAction { [unowned self] _ in
+        delegate?.logoutTapped(viewController: self)
+    })
 
     func configureUI() {
         title = "마이페이지"
@@ -92,19 +71,16 @@ class StudentAccountViewController: UIViewController {
     }
     
     func configureSubviews() {
-        view.addSubview(headStackView)
-        headStackView.top(to: view.safeAreaLayoutGuide, offset: verticalMargin)
-        headStackView.leading(to: view.safeAreaLayoutGuide, offset: horizontalMargin)
+        view.addSubviews(
+            rowsStackView,
+            logOutButton
+        )
         
-        view.addSubview(valueStackView)
-        valueStackView.leadingToTrailing(of: headStackView, offset: tableSpacing)
-        valueStackView.top(to: headStackView)
-        valueStackView.trailing(to: view.safeAreaLayoutGuide, offset: -horizontalMargin)
-
-        view.addSubview(logOutButton)
-        logOutButton.leading(to: view.safeAreaLayoutGuide, offset: horizontalMargin)
-        logOutButton.trailing(to: view.safeAreaLayoutGuide, offset: -horizontalMargin)
-        logOutButton.bottom(to: view.safeAreaLayoutGuide, offset: -verticalMargin)
+        rowsStackView.horizontalToSuperview(insets: .horizontal(.horizontalMargin), usingSafeArea: true)
+        rowsStackView.topToSuperview(offset: 40, usingSafeArea: true)
+        
+        logOutButton.horizontalToSuperview(insets: .horizontal(.horizontalMargin), usingSafeArea: true)
+        logOutButton.bottomToSuperview(offset: -.verticalMargin, usingSafeArea: true)
     }
 
 }

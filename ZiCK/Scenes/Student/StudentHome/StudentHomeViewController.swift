@@ -35,44 +35,33 @@ class StudentHomeViewController: UIViewController {
         didSet {
             guard let sceneData else { return }
             
-            attendStatusLabel.text = sceneData.attendStatus
-                ? "출석 인증을 완료했습니다"
-                : "출석 인증을 하지 않았습니다"
+            statusView.attended = sceneData.attendStatus
         }
     }
     
-    // MARK: -UI
+    // MARK: - UI
     
-    private lazy var dateLabel = UILabel().then {
-        $0.text = DateFormatter.formatAsHome(from: Date())
-    }
+    private lazy var statusView = StudentStatusView()
     
-    private lazy var attendStatusLabel = UILabel().then { _ in
-    }
+    private lazy var attendButton  = UIButton(configuration: UIButton.Configuration.primary().with {
+        $0.title = "출석 인증하기"
+    }, primaryAction: UIAction { [unowned self] _ in
+        delegate?.attendTapped(viewController: self)
+    })
     
-    private lazy var attendButton = {
-        var configuration = UIButton.Configuration.primary()
-        configuration.title = "출석 인증하기"
-        return UIButton(configuration: configuration, primaryAction: UIAction { [unowned self] _ in
-            delegate?.attendTapped(viewController: self)
-        })
-    }()
-    
-    private lazy var stackView = UIStackView(
-        arrangedSubviews: [dateLabel, attendStatusLabel, attendButton]
-    ).then {
-        $0.axis = .vertical
-        $0.spacing = 16
-    }
-
     func configureUI() {
+        title = "ZiCK"
+        navigationController?.navigationBar.prefersLargeTitles = true
         view.backgroundColor = .systemBackground
         configureSubviews()
     }
     
     func configureSubviews() {
-        view.addSubview(stackView)
-        stackView.center(in: view)
+        view.addSubview(statusView)
+        
+        statusView.centerYToSuperview()
+        statusView.heightToSuperview(multiplier: 0.3, usingSafeArea: true)
+        statusView.horizontalToSuperview(insets: .horizontal(.horizontalMargin), usingSafeArea: true)
     }
 
 }

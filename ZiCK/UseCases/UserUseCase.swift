@@ -23,11 +23,12 @@ struct UserUseCase {
         }
         do {
             let response = try await APICaller.shared.currentUser(accessToken: token)
-            guard let studentNumber = response.studentNumber else {
+            guard response.studentNumber != nil else {
                 throw UseCaseError.invalidAuthorization
             }
             return StudentDetails(
                 studentNumber: response.studentNumber!,
+                name: "Placeholder", // todo: name
                 applied: response.applied!,
                 attended: response.verified!
             )

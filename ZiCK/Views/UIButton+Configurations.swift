@@ -20,8 +20,9 @@ extension UIButton.Configuration {
     }
     
     static func destructive() -> UIButton.Configuration {
-        var configuration = UIButton.Configuration.filled()
+        var configuration = UIButton.Configuration.tinted()
         configuration.baseBackgroundColor = .systemRed
+        configuration.baseForegroundColor = .systemRed
         configuration.contentInsets.top = verticalInset
         configuration.contentInsets.bottom = verticalInset
         return configuration
