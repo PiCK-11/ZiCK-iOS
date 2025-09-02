@@ -8,7 +8,7 @@ struct APICaller {
     
     private func baseRequest(path: String) -> URLRequest {
         var urlComponents = URLComponents(string: APICaller.baseURL)!
-        urlComponents.path = path
+        urlComponents.path += path
         return URLRequest(url: urlComponents.url!)
     }
     
