@@ -36,10 +36,15 @@ class StudentHomeViewController: UIViewController {
             guard let sceneData else { return }
             
             statusView.attended = sceneData.attendStatus
+            attendButton.isHidden = sceneData.attendStatus
         }
     }
     
     // MARK: - UI
+    
+    private lazy var logoImageView = UIImageView().then {
+        $0.image = UIImage(named: "Logo")
+    }
     
     private lazy var statusView = StudentStatusView()
     
@@ -47,21 +52,31 @@ class StudentHomeViewController: UIViewController {
         $0.title = "출석 인증하기"
     }, primaryAction: UIAction { [unowned self] _ in
         delegate?.attendTapped(viewController: self)
-    })
+    }).then {
+        $0.isHidden = true
+    }
     
     func configureUI() {
         title = "ZiCK"
-        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationController?.navigationBar.prefersLargeTitles = false
         view.backgroundColor = .systemBackground
         configureSubviews()
     }
     
     func configureSubviews() {
-        view.addSubview(statusView)
+        view.addSubviews(logoImageView, statusView, attendButton)
+        
+        logoImageView.centerXToSuperview(usingSafeArea: true)
+        logoImageView.topToSuperview(offset: 40, usingSafeArea: true)
+        logoImageView.width(120)
+        logoImageView.heightToWidth(of: logoImageView)
         
         statusView.centerYToSuperview()
         statusView.heightToSuperview(multiplier: 0.3, usingSafeArea: true)
         statusView.horizontalToSuperview(insets: .horizontal(.horizontalMargin), usingSafeArea: true)
+        
+        attendButton.horizontalToSuperview(insets: .horizontal(.horizontalMargin), usingSafeArea: true)
+        attendButton.bottomToSuperview(offset: -.verticalMargin, usingSafeArea: true)
     }
 
 }

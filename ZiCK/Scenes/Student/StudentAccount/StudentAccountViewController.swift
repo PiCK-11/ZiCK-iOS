@@ -66,6 +66,7 @@ class StudentAccountViewController: UIViewController {
 
     func configureUI() {
         title = "마이페이지"
+        navigationController?.navigationBar.prefersLargeTitles = false
         view.backgroundColor = .systemBackground
         configureSubviews()
     }
@@ -77,7 +78,7 @@ class StudentAccountViewController: UIViewController {
         )
         
         rowsStackView.horizontalToSuperview(insets: .horizontal(.horizontalMargin), usingSafeArea: true)
-        rowsStackView.topToSuperview(offset: 40, usingSafeArea: true)
+        rowsStackView.topToSuperview(offset: 60, usingSafeArea: true)
         
         logOutButton.horizontalToSuperview(insets: .horizontal(.horizontalMargin), usingSafeArea: true)
         logOutButton.bottomToSuperview(offset: -.verticalMargin, usingSafeArea: true)

@@ -45,17 +45,28 @@ class StudentQrViewController: UIViewController {
     
     // MARK: -UI
     
+    private lazy var titleLabel = UILabel().then {
+        $0.text = "QR코드를 급식실 화면에 보이게 가까이 대주세요"
+        $0.textColor = .secondaryLabel
+    }
+    
     private lazy var qrImageView = UIImageView().then {
         $0.layer.magnificationFilter = .nearest
     }
     
     func configureUI() {
+        title = "QR 스캔"
+        navigationController?.navigationBar.prefersLargeTitles = false
         view.backgroundColor = .systemBackground
         configureSubviews()
     }
     
     func configureSubviews() {
-        view.addSubview(qrImageView)
+        view.addSubviews(titleLabel, qrImageView)
+        
+        titleLabel.centerXToSuperview()
+        titleLabel.bottomToTop(of: qrImageView, offset: -32)
+        
         qrImageView.center(in: view)
         qrImageView.width(300)
         qrImageView.heightToWidth(of: qrImageView)
