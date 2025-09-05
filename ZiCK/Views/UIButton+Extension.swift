@@ -1,6 +1,20 @@
 import UIKit
 import Then
 
+extension UIButton {
+    
+    func startLoading() {
+        configuration?.showsActivityIndicator = true
+        setNeedsUpdateConfiguration()
+    }
+    
+    func stopLoading() {
+        configuration?.showsActivityIndicator = false
+        setNeedsUpdateConfiguration()
+    }
+    
+}
+
 extension UIButton.Configuration {
     
     private static let verticalInset: CGFloat = 12

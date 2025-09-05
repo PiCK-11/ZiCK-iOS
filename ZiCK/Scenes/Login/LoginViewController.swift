@@ -2,7 +2,11 @@ import UIKit
 import Then
 import TinyConstraints
 
-struct LoginResult {}
+struct LoginResult {
+    
+    let errorMessage: String?
+    
+}
 
 protocol LoginViewControllerDelegate {
     
@@ -31,13 +35,28 @@ class LoginViewController: UIViewController {
     }
     
     func loginTapped() {
-        guard let username = usernameTextField.field.text else { return }
-        guard let password = passwordTextField.field.text else { return }
-        // todo validation
-        // todo loading
-        Task {
-            await delegate?.login(viewController: self, username: username, password: password)
+        guard let username = usernameTextField.field.nonEmptyText else {
+            showErrorMessage("아이디를 입력해주세요")
+            return
         }
+        guard let password = passwordTextField.field.nonEmptyText else {
+            showErrorMessage("비밀번호를 입력해주세요")
+            return
+        }
+        
+        Task {
+            loginButton.startLoading()
+            let result = await delegate?.login(viewController: self, username: username, password: password)
+            loginButton.stopLoading()
+            
+            if let message = result?.errorMessage {
+                showErrorMessage(message)
+            }
+        }
+    }
+    
+    func showErrorMessage(_ message: String) {
+        errorMessageLabel.text = message
     }
     
     // MARK: -UI
@@ -66,7 +85,7 @@ class LoginViewController: UIViewController {
         loginTapped()
     })
     
-    private lazy var signUpButton = UIButton(configuration: UIButton.Configuration.secondary().with {
+    private lazy var registerButton = UIButton(configuration: UIButton.Configuration.secondary().with {
         $0.title = "회원가입"
     }, primaryAction: UIAction { [unowned self] _ in
         delegate?.switchToRegisterTapped(viewController: self)
@@ -80,8 +99,12 @@ class LoginViewController: UIViewController {
         $0.spacing = 32
     }
     
+    private lazy var errorMessageLabel = UILabel().then {
+        $0.textColor = .systemRed
+    }
+    
     private lazy var buttonsStackView = UIStackView(
-        arrangedSubviews: [loginButton, signUpButton]
+        arrangedSubviews: [loginButton, registerButton]
     ).then {
         $0.axis = .vertical
         $0.spacing = 16
@@ -98,6 +121,7 @@ class LoginViewController: UIViewController {
             logoImageView,
             titleLabel,
             textFieldStackView,
+            errorMessageLabel,
             buttonsStackView
         )
         
@@ -114,6 +138,9 @@ class LoginViewController: UIViewController {
         textFieldStackView.topToBottom(of: titleLabel, offset: 32)
         textFieldStackView.leading(to: view.safeAreaLayoutGuide, offset: .horizontalMargin)
         textFieldStackView.trailing(to: view.safeAreaLayoutGuide, offset: -.horizontalMargin)
+        
+        errorMessageLabel.topToBottom(of: textFieldStackView, offset: 32)
+        errorMessageLabel.centerXToSuperview(usingSafeArea: true)
         
         buttonsStackView.leading(to: view.safeAreaLayoutGuide, offset: .horizontalMargin)
         buttonsStackView.trailing(to: view.safeAreaLayoutGuide, offset: -.horizontalMargin)

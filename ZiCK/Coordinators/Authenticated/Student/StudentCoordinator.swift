@@ -21,18 +21,10 @@ class StudentCoordinator: @preconcurrency Coordinator {
         let homeViewController = StudentHomeViewController(delegate: self)
         configureNavigation(to: homeViewController)
         navigator.replace(with: homeViewController)
-        
-        Task {
-            do {
-                let studentDetails = try await UserUseCase.shared.currentStudentDetails()
-                homeViewController.sceneData = StudentHomeViewController.SceneData(attendStatus: studentDetails.attended)
-            } catch {
-                // todo
-            }
-        }
+        fetchHomeData(to: homeViewController)
     }
     
-    func configureNavigation(to viewController: UIViewController) {
+    private func configureNavigation(to viewController: UIViewController) {
         viewController.navigationItem.rightBarButtonItem = UIBarButtonItem(
             image: UIImage(systemName: "gear"),
             primaryAction: UIAction { [unowned self] _ in
@@ -55,10 +47,25 @@ class StudentCoordinator: @preconcurrency Coordinator {
         
     }
     
+    private func fetchHomeData(to homeViewController: StudentHomeViewController) {
+        Task {
+            do {
+                let studentDetails = try await UserUseCase.shared.currentStudentDetails()
+                homeViewController.sceneData = StudentHomeViewController.SceneData(attendStatus: studentDetails.attended)
+            } catch {
+                // todo
+            }
+        }
+    }
+    
 }
 
 @MainActor
 extension StudentCoordinator: @preconcurrency StudentHomeViewControllerDelegate {
+    
+    func refreshTapped(viewController: StudentHomeViewController) {
+        fetchHomeData(to: viewController)
+    }
     
     func attendTapped(viewController: StudentHomeViewController) {
         let qrViewController = StudentQrViewController(delegate: self)

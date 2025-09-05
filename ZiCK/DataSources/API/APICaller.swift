@@ -26,6 +26,8 @@ struct APICaller {
             .forbidden
         case 404:
             .notFound
+        case 409:
+            .conflict
         default:
             .internalServerError
         }

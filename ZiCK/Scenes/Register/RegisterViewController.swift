@@ -1,6 +1,10 @@
 import UIKit
 
-struct RegisterResult {}
+struct RegisterResult {
+    
+    let errorMessage: String?
+    
+}
 
 protocol RegisterViewControllerDelegate {
     
@@ -29,16 +33,39 @@ class RegisterViewController: UIViewController {
     }
     
     func registerTapped() {
-        guard let username = usernameTextField.field.text else { return }
-        guard let password = passwordTextField.field.text else { return }
-        guard let name = nameTextField.field.text else { return }
-        guard let studentNumberString = studentNumberTextField.field.text else { return }
-        // todo validation
-        guard let studentNumber = Int(studentNumberString) else { return }
-        // todo loading
-        Task {
-            await delegate?.register(viewController: self, username: username, password: password, name: name, studentNumber: studentNumber)
+        guard let username = usernameTextField.field.nonEmptyText else {
+            showErrorMessage("아이디를 입력해주세요")
+            return
         }
+        guard let password = passwordTextField.field.nonEmptyText else {
+            showErrorMessage("비밀번호를 입력해주세요")
+            return
+        }
+        guard let name = nameTextField.field.nonEmptyText else {
+            showErrorMessage("이름을 입력해주세요")
+            return
+        }
+        guard let studentNumberString = studentNumberTextField.field.nonEmptyText else {
+            showErrorMessage("학번을 입력해주세요")
+            return
+        }
+        guard let studentNumber = Int(studentNumberString) else {
+            showErrorMessage("학번을 올바르게 입력해주세요")
+            return
+        }
+        Task {
+            registerButton.startLoading()
+            let result = await delegate?.register(viewController: self, username: username, password: password, name: name, studentNumber: studentNumber)
+            registerButton.stopLoading()
+            
+            if let message = result?.errorMessage {
+                showErrorMessage(message)
+            }
+        }
+    }
+    
+    func showErrorMessage(_ message: String) {
+        errorMessageLabel.text = message
     }
     
     // MARK: -UI
@@ -69,7 +96,7 @@ class RegisterViewController: UIViewController {
         $0.label.text = "학번"
     }
     
-    private lazy var signUpButton = UIButton(configuration: UIButton.Configuration.primary().with {
+    private lazy var registerButton = UIButton(configuration: UIButton.Configuration.primary().with {
         $0.title = "회원가입"
     }, primaryAction: UIAction { [unowned self] _ in
         registerTapped()
@@ -93,8 +120,12 @@ class RegisterViewController: UIViewController {
         $0.spacing = 32
     }
     
+    private lazy var errorMessageLabel = UILabel().then {
+        $0.textColor = .systemRed
+    }
+    
     private lazy var buttonsStackView = UIStackView(
-        arrangedSubviews: [signUpButton, loginButton]
+        arrangedSubviews: [registerButton, loginButton]
     ).then {
         $0.axis = .vertical
         $0.spacing = 16
@@ -111,6 +142,7 @@ class RegisterViewController: UIViewController {
             logoImageView,
             titleLabel,
             textFieldStackView,
+            errorMessageLabel,
             buttonsStackView
         )
         
@@ -132,6 +164,9 @@ class RegisterViewController: UIViewController {
         textFieldStackView.topToBottom(of: titleLabel, offset: 32)
         textFieldStackView.leading(to: view.safeAreaLayoutGuide, offset: .horizontalMargin)
         textFieldStackView.trailing(to: view.safeAreaLayoutGuide, offset: -.horizontalMargin)
+        
+        errorMessageLabel.topToBottom(of: textFieldStackView, offset: 32)
+        errorMessageLabel.centerXToSuperview(usingSafeArea: true)
         
         buttonsStackView.leading(to: view.safeAreaLayoutGuide, offset: .horizontalMargin)
         buttonsStackView.trailing(to: view.safeAreaLayoutGuide, offset: -.horizontalMargin)

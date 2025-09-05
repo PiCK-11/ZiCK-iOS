@@ -1,5 +1,3 @@
-//
-
 import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
@@ -11,16 +9,23 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
         window = UIWindow(windowScene: windowScene)
-        window?.rootViewController = NavigationControllerNavigator.shared.navigationController
+        window?.rootViewController = splashScreenViewController()
         window?.makeKeyAndVisible()
         
+        rootCoordinator.delegate = self
         rootCoordinator.start()
         
 //        window = UIWindow(windowScene: windowScene)
-//        window?.rootViewController = CafeteriaHomeViewController()
+//        window?.rootViewController = StudentHomeViewController()
 //        window?.makeKeyAndVisible()
     }
 
+    private func splashScreenViewController() -> UIViewController {
+        let launchStoryBoard = UIStoryboard.init(name: "LaunchScreen", bundle: nil)
+        let splashController = launchStoryBoard.instantiateInitialViewController()
+        return splashController!
+    }
+    
     func sceneDidDisconnect(_ scene: UIScene) {
         // Called as the scene is being released by the system.
         // This occurs shortly after the scene enters the background, or when its session is discarded.
@@ -49,6 +54,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
     }
 
-
 }
 
+extension SceneDelegate: RootCoordinatorDelegate {
+    
+    func finishedInit(coordinator: RootCoordinator) {
+        window?.rootViewController = NavigationControllerNavigator.shared.navigationController
+    }
+    
+}

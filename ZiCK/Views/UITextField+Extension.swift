@@ -11,3 +11,11 @@ extension UITextField {
     
 }
 
+extension UITextField {
+    
+    var nonEmptyText: String? {
+        guard let text else { return nil }
+        return text.isEmpty ? nil : text
+    }
+    
+}

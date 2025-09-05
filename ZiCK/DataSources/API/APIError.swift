@@ -4,6 +4,7 @@ enum APIError: Error {
     case unAuthorized
     case forbidden
     case notFound
+    case conflict
     case internalServerError
     
 }

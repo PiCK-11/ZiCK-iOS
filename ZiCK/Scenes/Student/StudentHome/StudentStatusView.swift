@@ -25,6 +25,8 @@ class StudentStatusView: UIView {
         }
     }
     
+    var refreshTappedHandler: (() -> Void)?
+    
     override init(frame: CGRect) {
         super.init(frame: .zero)
         configureUI()
@@ -33,6 +35,8 @@ class StudentStatusView: UIView {
     required init?(coder: NSCoder) {
         fatalError()
     }
+    
+    // MARK: - UI
     
     private lazy var dateLabel = UILabel().then {
         $0.text = DateFormatter.formatAsHome(from: Date())
@@ -45,23 +49,37 @@ class StudentStatusView: UIView {
     
     private lazy var attendStatusImageView = UIImageView()
     
+    private lazy var attendStackView = UIStackView(arrangedSubviews: [attendStatusImageView, attendStatusLabel]).then {
+        $0.axis = .horizontal
+        $0.spacing = 16
+    }
+    
+    private lazy var refreshButton = UIButton(configuration: .filled().with {
+        $0.image = UIImage(systemName: "arrow.clockwise")
+        $0.baseBackgroundColor = .systemBackground
+        $0.baseForegroundColor = .accent
+    }, primaryAction: UIAction { [unowned self] _ in
+        refreshTappedHandler?()
+    })
+    
     func configureUI() {
         let inset: CGFloat = 16
         layer.cornerRadius = 16
         layer.borderWidth = 1
         backgroundColor = .accent.withProminence(.quaternary)
         
-        addSubviews(dateLabel, attendStatusLabel, attendStatusImageView)
+        addSubviews(dateLabel, refreshButton, attendStackView)
         
         dateLabel.leadingToSuperview(offset: inset)
-        dateLabel.centerY(to: attendStatusImageView)
+        dateLabel.centerY(to: refreshButton)
         
-        attendStatusImageView.trailingToSuperview(offset: inset)
-        attendStatusImageView.topToSuperview(offset: inset)
+        refreshButton.trailingToSuperview(offset: inset)
+        refreshButton.topToSuperview(offset: inset)
+        
         attendStatusImageView.width(40)
         attendStatusImageView.heightToWidth(of: attendStatusImageView)
         
-        attendStatusLabel.center(in: self)
+        attendStackView.center(in: self)
     }
     
 }

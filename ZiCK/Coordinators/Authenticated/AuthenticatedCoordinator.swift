@@ -13,6 +13,7 @@ class AuthenticatedCoordinator: @preconcurrency Coordinator {
     let navigator = NavigationControllerNavigator.shared
     
     func start() {
+        navigator.replace(with: LoadingViewController())
         Task {
             let user = try! await UserUseCase.shared.currentUser()
             let coordinator: any Coordinator = switch user.role {

@@ -29,9 +29,14 @@ extension UnAuthenticatedCoordinator: LoginViewControllerDelegate {
             try await AuthUseCase.shared.login(username: username, password: password)
             delegate?.finishedAuthentication(coordinator: self)
         } catch {
-            return LoginResult()
+            return switch error {
+            case .invalidValues:
+                LoginResult(errorMessage: "아이디 또는 비밀번호가 올바르지 않습니다")
+            default:
+                LoginResult(errorMessage: "서버 오류가 발생했습니다")
+            }
         }
-        return LoginResult()
+        return LoginResult(errorMessage: nil)
     }
     
 }
@@ -47,9 +52,19 @@ extension UnAuthenticatedCoordinator: RegisterViewControllerDelegate {
             try await AuthUseCase.shared.register(username: username, password: password, name: name, studentNumber: studentNumber)
             delegate?.finishedAuthentication(coordinator: self)
         } catch {
-            return RegisterResult()
+            return switch error {
+            case .invalidValues(let reason):
+                switch reason {
+                case .duplicate:
+                    RegisterResult(errorMessage: "이미 존재하는 사용자입니다")
+                case .failedValidation:
+                    RegisterResult(errorMessage: "입력 형식이 올바르지 않습니다")
+                }
+            default:
+                RegisterResult(errorMessage: "서버 오류가 발생했습니다")
+            }
         }
-        return RegisterResult()
+        return RegisterResult(errorMessage: nil)
     }
     
 }

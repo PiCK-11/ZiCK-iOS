@@ -1,5 +1,13 @@
+protocol RootCoordinatorDelegate: AnyObject {
+    
+    func finishedInit(coordinator: RootCoordinator)
+    
+}
+
 @MainActor
 class RootCoordinator: @preconcurrency Coordinator {
+    
+    weak var delegate: RootCoordinatorDelegate?
     
     func start() {
         showChildCoordinator()
@@ -17,11 +25,8 @@ class RootCoordinator: @preconcurrency Coordinator {
                 unAuthenticatedCoordinator.delegate = self
                 unAuthenticatedCoordinator.start()
             }
+            delegate?.finishedInit(coordinator: self)
         }
-    }
-    
-    private func authenticated() -> Bool {
-        return true
     }
 
 }
