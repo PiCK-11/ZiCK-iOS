@@ -1,10 +1,16 @@
 import UIKit
 
+struct ExcelExportResult {
+    
+    let success: Bool
+    
+}
+
 protocol CafeteriaHomeViewControllerDelegate {
     
     func scanTapped(viewController: CafeteriaHomeViewController)
-    func exportToExcelTapped(viewController: CafeteriaHomeViewController)
-    
+    func exportToExcelTapped(viewController: CafeteriaHomeViewController) async -> ExcelExportResult
+
 }
 
 class CafeteriaHomeViewController: UIViewController {
@@ -47,6 +53,31 @@ class CafeteriaHomeViewController: UIViewController {
         }
     }
     
+    func downloadTapped() {
+        Task {
+            downloadAsExcelButton.startLoading()
+            let result = await delegate?.exportToExcelTapped(viewController: self)
+            downloadAsExcelButton.stopLoading()
+            
+            guard let result else { return }
+            
+            let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
+            
+            if result.success {
+                alertController.title = "엑셀 내보내기 성공"
+                alertController.message = "출석 데이터를 .xlsx 파일로 내보냈습니다"
+            } else {
+                alertController.title = "액셀 내보내기 실패"
+                alertController.message = "출석 데이터를 내보내는 데 실패했습니다"
+            }
+            alertController.addAction(UIAlertAction(title: "확인", style: .default) { _ in
+                alertController.dismiss(animated: true)
+            })
+            
+            present(alertController, animated: true)
+        }
+    }
+    
     // MARK: - UI
     
     private lazy var logoImageView = UIImageView().then {
@@ -72,7 +103,7 @@ class CafeteriaHomeViewController: UIViewController {
     private lazy var downloadAsExcelButton = UIButton(configuration: UIButton.Configuration.secondary().with {
         $0.title = "Excel 파일로 다운로드"
     }, primaryAction: UIAction { [unowned self] _ in
-        delegate?.exportToExcelTapped(viewController: self)
+        downloadTapped()
     })
     
     func configureUI() {
@@ -100,4 +131,3 @@ class CafeteriaHomeViewController: UIViewController {
     }
 
 }
-
