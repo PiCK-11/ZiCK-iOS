@@ -23,13 +23,12 @@ extension CafeteriaCoordinator: CafeteriaHomeViewControllerDelegate {
 
 extension CafeteriaCoordinator: CafeteriaScanViewControllerDelegate {
     
-    func qrReceived(viewController: CafeteriaScanViewController, message: String) {
-        Task {
-            do {
-                try await AttendanceUseCase.shared.markAsAttend(with: message)
-            } catch {
-                // todo
-            }
+    func qrReceived(viewController: CafeteriaScanViewController, message: String) async -> QrReceiveResult {
+        do {
+            try await AttendanceUseCase.shared.markAsAttend(with: message)
+            return QrReceiveResult(success: true)
+        } catch {
+            return QrReceiveResult(success: false)
         }
     }
     

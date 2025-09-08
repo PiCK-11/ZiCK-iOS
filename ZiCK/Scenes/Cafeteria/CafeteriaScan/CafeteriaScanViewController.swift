@@ -1,9 +1,15 @@
 import AVFoundation
 import UIKit
 
+struct QrReceiveResult {
+    
+    let success: Bool
+    
+}
+
 protocol CafeteriaScanViewControllerDelegate {
     
-    func qrReceived(viewController: CafeteriaScanViewController, message: String)
+    func qrReceived(viewController: CafeteriaScanViewController, message: String) async -> QrReceiveResult
     
 }
 
@@ -32,6 +38,7 @@ class CafeteriaScanViewController: UIViewController {
         
         initializeCaptureSession()
         configureCaptureUI()
+        configureUI()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -115,6 +122,17 @@ class CafeteriaScanViewController: UIViewController {
         present(ac, animated: true)
         captureSession = nil
     }
+    
+    // MARK: - UI
+    
+    private lazy var toaster = ToastView()
+    
+    func configureUI() {
+        view.addSubview(toaster)
+        toaster.topToSuperview(offset: 32, usingSafeArea: true)
+        toaster.centerXToSuperview()
+        toaster.widthToSuperview(multiplier: 0.6)
+    }
 
 }
 
@@ -139,8 +157,15 @@ extension CafeteriaScanViewController: AVCaptureMetadataOutputObjectsDelegate {
             
             let scanEntry = ScanEntry(message: stringValue, ttl: Date() + 10)
             scanEntries.insert(scanEntry)
-            delegate?.qrReceived(viewController: self, message: stringValue)
             print(scanEntry)
+            
+            Task {
+                guard let result = await delegate?.qrReceived(viewController: self, message: stringValue) else {
+                    return
+                }
+                toaster.text = result.success ? "인식 성공" : "인식 실패"
+                toaster.accent = result.success ? .systemGreen : .systemRed
+            }
         }
     }
 }
