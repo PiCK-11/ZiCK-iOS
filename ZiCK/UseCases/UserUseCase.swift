@@ -11,7 +11,7 @@ struct UserUseCase {
         do {
             let response = try await APICaller.shared.currentUser(accessToken: token)
             let role: UserRole = response.studentNumber != nil ? .student : .cafeteria
-            return User(id: "0", username: response.username, role: role) // todo: id
+            return User(id: response.userId, username: response.userName, role: role)
         } catch {
             throw UseCaseError(from: error)
         }
