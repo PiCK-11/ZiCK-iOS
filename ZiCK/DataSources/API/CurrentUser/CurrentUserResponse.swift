@@ -1,6 +1,6 @@
 struct CurrentUserResponse: Codable {
     
-    let userId: String
+    let loginId: String
     let userName: String
     let studentNumber: Int?
     let applied: Bool?
