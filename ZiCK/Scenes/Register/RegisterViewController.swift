@@ -79,6 +79,15 @@ class RegisterViewController: UIViewController {
         $0.text = "회원가입"
     }
     
+    private lazy var studentBadge = InsetLabel().then {
+        $0.insets = UIEdgeInsets(top: 6, left: 12, bottom: 6, right: 12)
+        $0.text = "학생"
+        $0.textColor = .systemGreen
+        $0.backgroundColor = .systemGreen.withAlphaComponent(0.1)
+        $0.layer.cornerRadius = 6
+        $0.layer.masksToBounds = true
+    }
+    
     private lazy var usernameTextField = LabeledTextField().then {
         $0.label.text = "아이디"
     }
@@ -141,6 +150,7 @@ class RegisterViewController: UIViewController {
         view.addSubviews(
             logoImageView,
             titleLabel,
+            studentBadge,
             textFieldStackView,
             errorMessageLabel,
             buttonsStackView
@@ -160,6 +170,9 @@ class RegisterViewController: UIViewController {
         
         titleLabel.centerX(to: view)
         titleLabel.topToBottom(of: logoImageView, offset: 24)
+        
+        studentBadge.leadingToTrailing(of: titleLabel, offset: 16)
+        studentBadge.centerY(to: titleLabel)
         
         textFieldStackView.topToBottom(of: titleLabel, offset: 32)
         textFieldStackView.leading(to: view.safeAreaLayoutGuide, offset: .horizontalMargin)
