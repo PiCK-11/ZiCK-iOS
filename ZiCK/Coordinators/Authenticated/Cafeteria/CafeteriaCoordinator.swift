@@ -23,7 +23,7 @@ extension CafeteriaCoordinator: CafeteriaHomeViewControllerDelegate {
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "YYYY-MM-DD"
-        let filename = "\(dateFormatter.string(from: Date())).xlsx"
+        let filename = "attendance-\(dateFormatter.string(from: Date())).xlsx"
         let url = URL.documentsDirectory.appending(path: filename)
         
         do {
