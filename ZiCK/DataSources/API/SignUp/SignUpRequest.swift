@@ -4,5 +4,6 @@ struct SignUpRequest: Codable {
     let userName: String
     let password: String
     let studentNumber: Int
+    let role: String
     
 }

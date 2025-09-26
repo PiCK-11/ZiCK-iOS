@@ -16,7 +16,13 @@ struct AuthUseCase {
     func register(username: String, password: String, name: String, studentNumber: Int) async throws(UseCaseError) {
         do {
             let data = try await APICaller.shared.signUp(
-                request: SignUpRequest(loginId: username, userName: name, password: password, studentNumber: studentNumber)
+                request: SignUpRequest(
+                    loginId: username,
+                    userName: name,
+                    password: password,
+                    studentNumber: studentNumber,
+                    role: "student"
+                )
             )
             AuthStorage.shared.setCurrentToken(to: data.accessToken)
         } catch {

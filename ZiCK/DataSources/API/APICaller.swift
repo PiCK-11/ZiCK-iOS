@@ -96,8 +96,12 @@ struct APICaller {
         var urlRequest = baseRequest(path: "/attendances/excel")
         urlRequest.addBearerToken(accessToken)
         
-        let data = try await callAPI(with: urlRequest)
-        return data
+        let responseData = try await callAPI(with: urlRequest)
+        let decoded = try decodeOrThrow(ExportAsExcelResponse.self, from: responseData)
+        if let excelData = Data(base64Encoded: decoded.fileData) {
+            return excelData
+        }
+        throw .internalServerError
     }
     
 }

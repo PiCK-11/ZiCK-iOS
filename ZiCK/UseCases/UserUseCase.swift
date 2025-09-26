@@ -28,7 +28,7 @@ struct UserUseCase {
             }
             return StudentDetails(
                 studentNumber: response.studentNumber!,
-                name: "Placeholder", // todo: name
+                name: response.userName,
                 applied: response.applied!,
                 attended: response.verified!
             )
