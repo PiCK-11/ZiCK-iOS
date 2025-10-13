@@ -21,7 +21,7 @@ struct AuthUseCase {
                     userName: name,
                     password: password,
                     studentNumber: studentNumber,
-                    role: "student"
+                    role: "STUDENT"
                 )
             )
             AuthStorage.shared.setCurrentToken(to: data.accessToken)
