@@ -11,6 +11,8 @@ class StudentQrViewController: UIViewController {
     
     var delegate: StudentQrViewControllerDelegate?
     
+    private var originalBrightness: CGFloat = 0
+    
     init(delegate: StudentQrViewControllerDelegate? = nil) {
         super.init(nibName: nil, bundle: nil)
         self.delegate = delegate
@@ -42,6 +44,20 @@ class StudentQrViewController: UIViewController {
         qrCodeGenerator.correctionLevel = "H"
         return UIImage(ciImage: qrCodeGenerator.outputImage!)
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+            super.viewWillAppear(animated)
+            
+            originalBrightness = UIScreen.main.brightness
+            
+            UIScreen.main.brightness = 1.0
+        }
+        
+        override func viewWillDisappear(_ animated: Bool) {
+            super.viewWillDisappear(animated)
+            
+            UIScreen.main.brightness = originalBrightness // 밝기 복원
+        }
     
     // MARK: -UI
     
